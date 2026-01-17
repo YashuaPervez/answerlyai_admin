@@ -6,6 +6,20 @@ import routes from "./routes";
 
 const app = express();
 
+// Handle pre-parsed body from serverless-offline (comes as Buffer or string, not stream)
+app.use((req: Request, _res: Response, next: NextFunction) => {
+  if (Buffer.isBuffer(req.body)) {
+    req.body = JSON.parse(req.body.toString("utf8"));
+  } else if (typeof req.body === "string" && req.body.length > 0) {
+    try {
+      req.body = JSON.parse(req.body);
+    } catch {
+      // Not JSON, leave as is
+    }
+  }
+  next();
+});
+
 app.use(express.json());
 
 app.get("/", (_req: Request, res: Response) => {
