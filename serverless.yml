@@ -1,5 +1,6 @@
 service: answerly-admin
 frameworkVersion: "3"
+useDotenv: true
 
 provider:
   name: aws
