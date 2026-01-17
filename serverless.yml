@@ -1,9 +1,9 @@
 service: answerly-admin
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs22.x
   httpApi:
     cors: true
 
