@@ -32,7 +32,7 @@ interface ProcessedSlots {
     [key: string]: MergedReadable[];
   };
 }
-function isWeekday(date: Date): boolean {
+export function isWeekday(date: Date): boolean {
   const day = date.getDay();
   return day >= 1 && day <= 5;
 }
@@ -231,9 +231,14 @@ export function processAvailabilitySlots(
 }
 
 function getDateString(date: Date, hour: string): string {
-  const tzOffset = date.getTimezoneOffset();
+  // const tzOffset = date.getTimezoneOffset();
+  const tzOffset = 0;
   const timezoneOffsetAbs = Math.abs(tzOffset);
-  const timezoneSign = tzOffset < 0 ? "-" : "";
+  const timezoneSign = tzOffset < 0 ? "-" : "+";
+
+  console.log("tzOffset >>", tzOffset);
+  console.log("timezoneOffsetAbs >>", timezoneOffsetAbs);
+  console.log("timezoneSign >>", timezoneSign);
 
   return `${date.getFullYear()}-${(date.getMonth() + 1)
     .toString()
@@ -278,5 +283,3 @@ export function isSlotAvailable(
     return false;
   });
 }
-
-export { isWeekday, BUSINESS_HOURS_START, BUSINESS_HOURS_END, TIMEZONE };

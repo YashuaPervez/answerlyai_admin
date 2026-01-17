@@ -8,10 +8,13 @@ import {
   getDayStartISO,
   getDayEndISO,
   isSlotAvailable,
-  BUSINESS_HOURS_START,
-  BUSINESS_HOURS_END,
-  TIMEZONE,
 } from "../managers/availabilityManager";
+
+import userConfig from "../userconfg.json";
+
+const TIMEZONE = userConfig.timezone;
+const BUSINESS_HOURS_START = userConfig.businessHoursStart;
+const BUSINESS_HOURS_END = userConfig.businessHoursEnd;
 
 import type { BookAppointmentPayload } from "../schemas/calendar";
 
@@ -25,11 +28,17 @@ export async function checkAvailability(
   const end = new Date();
   end.setDate(new Date().getDate() + 7);
 
+  console.log("TIMEZONE >>", TIMEZONE);
+  console.log("start off set >>", start.getTimezoneOffset());
+
   const startTz = toZonedTime(start, TIMEZONE);
   const endTz = toZonedTime(end, TIMEZONE);
 
   const timeMin = getDayStartISO(startTz);
+  console.log("timeMin >>", timeMin);
+
   const timeMax = getDayEndISO(endTz);
+  console.log("timeMax >>", timeMax);
 
   const events = await getEvents(timeMin, timeMax);
 
