@@ -17,19 +17,19 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.3",
     "nodemon": "^3.1.11",
-    "serverless": "^3.0.0",
-    "serverless-offline": "^13.0.0",
-    "serverless-plugin-typescript": "^2.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "serverless": "^3.40.0",
+    "serverless-plugin-typescript": "^2.1.5",
+    "serverless-offline": "^13.0.0"
   },
   "dependencies": {
-    "@vendia/serverless-express": "^4.12.6",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "googleapis": "^170.0.0",
-    "zod": "^4.3.5"
+    "zod": "^4.3.5",
+    "serverless-http": "^3.2.0"
   }
 }

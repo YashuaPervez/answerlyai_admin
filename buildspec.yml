@@ -8,7 +8,7 @@ phases:
       - echo "Installing dependencies..."
       - node -v
       - npm install -g serverless@^3.38.0
-      - npm install
+      - npm install --production
   pre_build:
     commands:
       - aws --version
