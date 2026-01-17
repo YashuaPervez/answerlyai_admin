@@ -2,9 +2,11 @@ import { format, addDays, parseISO } from "date-fns";
 import { toZonedTime, fromZonedTime, formatInTimeZone } from "date-fns-tz";
 import { CalendarEvent } from "./googleCalendar";
 
-const TIMEZONE = "America/New_York";
-const BUSINESS_HOURS_START = 10;
-const BUSINESS_HOURS_END = 17;
+import userConfig from "../userconfg.json";
+
+const TIMEZONE = userConfig.timezone;
+const BUSINESS_HOURS_START = userConfig.businessHoursStart;
+const BUSINESS_HOURS_END = userConfig.businessHoursEnd;
 const SLOT_DURATION_MINUTES = 30;
 
 interface TimeSlot {
@@ -165,8 +167,8 @@ function mergeConsecutiveSlots(slots: TimeSlot[]): MergedReadable[] {
   merged.push(currentBlock);
 
   return merged.map((item) => {
-    const start = formatInTimeZone(parseISO(item.start), TIMEZONE, "hha");
-    const end = formatInTimeZone(parseISO(item.end), TIMEZONE, "hha");
+    const start = formatInTimeZone(parseISO(item.start), TIMEZONE, "hh:mma");
+    const end = formatInTimeZone(parseISO(item.end), TIMEZONE, "hh:mma");
 
     return `${start} - ${end}`;
   });
@@ -227,3 +229,54 @@ export function processAvailabilitySlots(
     availableSlots: groupedSlots,
   };
 }
+
+function getDateString(date: Date, hour: string): string {
+  const tzOffset = date.getTimezoneOffset();
+  const timezoneOffsetAbs = Math.abs(tzOffset);
+  const timezoneSign = tzOffset < 0 ? "-" : "";
+
+  return `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${date
+    .getDate()
+    .toString()
+    .padStart(2, "0")}T${hour}${timezoneSign}${(timezoneOffsetAbs / 60)
+    .toString()
+    .padStart(2, "0")}:${(timezoneOffsetAbs % 60).toString().padStart(2, "0")}`;
+}
+
+export function getDayStartISO(date: Date): string {
+  return getDateString(date, "00:00:00");
+}
+
+export function getDayEndISO(date: Date): string {
+  return getDateString(date, "23:59:59");
+}
+
+export function isSlotAvailable(
+  startTime: Date,
+  endTime: Date,
+  events: CalendarEvent[]
+): boolean {
+  return !events.some((event) => {
+    if (event.status === "cancelled" || event.transparency === "transparent") {
+      return false;
+    }
+
+    if (event.start.date) {
+      const eventDate = event.start.date;
+      const slotDate = formatInTimeZone(startTime, TIMEZONE, "yyyy-MM-dd");
+      return eventDate === slotDate;
+    }
+
+    if (event.start.dateTime && event.end.dateTime) {
+      const eventStart = new Date(event.start.dateTime);
+      const eventEnd = new Date(event.end.dateTime);
+      return startTime < eventEnd && endTime > eventStart;
+    }
+
+    return false;
+  });
+}
+
+export { isWeekday, BUSINESS_HOURS_START, BUSINESS_HOURS_END, TIMEZONE };

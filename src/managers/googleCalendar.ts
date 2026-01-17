@@ -57,3 +57,37 @@ export async function getEvents(timeMin: string, timeMax: string) {
 
   return (response.data.items as CalendarEvent[]) || [];
 }
+
+export interface CreateEventParams {
+  summary: string;
+  startDateTime: string;
+  endDateTime: string;
+  attendeeEmail?: string;
+  attendeeName?: string;
+}
+
+export async function createEvent(params: CreateEventParams) {
+  const calendar = createCalendarClient();
+
+  const attendees = params.attendeeEmail
+    ? [{ email: params.attendeeEmail, displayName: params.attendeeName }]
+    : undefined;
+
+  const response = await calendar.events.insert({
+    calendarId: "primary",
+    requestBody: {
+      summary: params.summary,
+      start: {
+        dateTime: params.startDateTime,
+        timeZone: TIME_ZONE,
+      },
+      end: {
+        dateTime: params.endDateTime,
+        timeZone: TIME_ZONE,
+      },
+      attendees,
+    },
+  });
+
+  return response.data;
+}

@@ -1,3 +1,5 @@
 {
-  "timezone": "America/New_York"
+  "timezone": "America/New_York",
+  "businessHoursStart": 10,
+  "businessHoursEnd": 17
 }

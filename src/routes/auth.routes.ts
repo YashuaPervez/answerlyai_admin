@@ -3,10 +3,10 @@ import { google } from "googleapis";
 
 const router = Router();
 
-const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+const SCOPES = ["https://www.googleapis.com/auth/calendar"];
 const REDIRECT_URI =
   process.env.GOOGLE_REDIRECT_URI ||
-  "http://localhost:3000/auth/google/callback";
+  "http://localhost:4000/api/auth/google/callback";
 
 router.get("/google", (_req: Request, res: Response) => {
   try {
